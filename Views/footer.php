@@ -1,16 +1,8 @@
 <!-- Footer Start -->
-<div class="container-fluid pt-4 px-4">
-    <div class="bg-light rounded-top p-4">
-        <div class="row">
-            <div class="col-12 col-sm-6 text-center text-sm-start">
-                &copy; <a href="#">NST-cargo</a>, All Right Reserved.
-            </div>
-            <div class="col-12 col-sm-6 text-center text-sm-end">
-                Designed By <a href="#">Lad_77</a>
-                </br>
-                Distributed By <a class="border-bottom" href="#" target="_blank">Evotech_Africa</a>
-            </div>
-        </div>
+<footer class="footer">
+    <div class="d-sm-flex justify-content-center justify-content-sm-between">
+        <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2025. <a href="#" target="_blank">Nst-cargo</a> All rights reserved.</span>
+        <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="ti-heart text-danger ml-1"></i> by Evotech_Africa</span>
     </div>
-</div>
+</footer>
 <!-- Footer End -->
