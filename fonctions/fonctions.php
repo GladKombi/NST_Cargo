@@ -14,7 +14,7 @@ function RecuperPhoto($fichier_tmp, $nom_original, $destination)
     # Vérification de l'extension
     if (in_array($extension, $extensions_autorisees)) {
         # Nouveau nom de fichier (pour éviter les doublons)
-        $nouveau_nom = uniqid("Evotech_") . '.' . $extension;
+        $nouveau_nom = uniqid("NstCargo_") . '.' . $extension;
         # Chemin complet du fichier de destination
         $chemin = $destination . $nouveau_nom;
         # Déplacement du fichier temporaire vers le dossier de destination

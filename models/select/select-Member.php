@@ -1,13 +1,12 @@
 <?php
-if (isset($_GET["idMember"])) {
-    $id = $_GET["idMember"];
+if (isset($_GET["idmember"])) {
+    $id = $_GET["idmember"];
     $getDataMod = $connexion->prepare("SELECT * FROM membre WHERE matricule=?");
     $getDataMod->execute([$id]);
     $tab = $getDataMod->fetch();
-    $departementModif = $tab['departement'];
-    $title = "Update member indentity " . $tab['nom'] . " " . $tab['prenom'];
+    $title = "Update member identity " . $tab['nom'];
     $btn = "Update";
-    $url = "../models/updat/update-Agent-post.php?idAgent=" . $id;
+    $url = "../models/updat/up-member-post.php?idMember=" . $id;
 } else {
     $title = "Registrer new member";
     $btn = "Save";

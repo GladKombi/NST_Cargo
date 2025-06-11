@@ -2,7 +2,7 @@
 # Se connecter à la BD
 include '../connexion/connexion.php';
 # Appel du script de selection
-require_once('../models/select/select-Member.php');
+require_once('../models/select/select-Mentor.php');
 
 ?>
 <!DOCTYPE html>
@@ -174,195 +174,120 @@ require_once('../models/select/select-Member.php');
                 </div>
             </div> -->
 
-
             <?php require_once('aside.php'); ?>
 
             <div class="main-panel">
                 <div class="content-wrapper">
                     <div class="row">
                         <div class="col-12">
-                            <h4>Members</h4>
+                            <h4>Mentors menu</h4>
                         </div>
                         <!-- pour afficher les massage  -->
                         <?php
                         if (isset($_SESSION['msg']) && !empty($_SESSION['msg'])) {
                         ?>
-                            <button type="button" class="btn btn-outline-primary btn-lg btn-block"><?= $_SESSION['msg'] ?></button>                           
+                            <button type="button" class="btn btn-outline-primary btn-lg btn-block"><?= $_SESSION['msg'] ?></button>
                         <?php  }
                         #Cette ligne permet de vider la valeur qui se trouve dans la session message  
                         unset($_SESSION['msg']);
                         # Confirmation de la suppression
-                        if (isset($_GET['Supmember'])) {
-                            $id = $_GET["Supmember"];
+                        if (isset($_GET['MtMentor'])) {
+                            $id = $_GET["MtMentor"];
                         ?>
                             <div class="col-xl-12 px-3 card mt-4 px-4 pt-3">
-                                <h3 class="bi bi-shield-exclamation text-danger text-center">Confirmation Required</h3> <br>
-                                <p class="text-center">
-                                    Do you really want to delete this member? This is dangerous! <br>
-                                    This action is irreversible. Please ensure this is the action you wish to perform! It will delete a member from the database along with all data linked to him.
-                                </p>
+                                <h3 class="bi bi-shield-exclamation text-danger text-center"> Confirmation Required</h3> <br>
+                                <?php
+                                $n = 0;
+                                while ($memberInfo = $getMemberInfo->fetch()) {
+                                    $n++;
+                                ?>
+                                    <p class="text-center">
+                                        Do you really want to cancel <b><?= $memberInfo["matricule"] . " " . $memberInfo["nom"] ?> </b>mentoring ?
+                                    <div class="row text-center">
+                                        <div class="col-2">
+
+                                        </div>
+                                        <div class="col-8">
+                                            <img src="../images/profil/<?= $memberInfo["profil"] ?>" alt="" class="rounded-circle mt-2" width="95px" height="90px">
+                                        </div>
+                                        <div class="col-2">
+
+                                        </div>
+                                    </div>
+                                    </p>
+                                    <p class="text-center">
+                                        This action is irreversible. Please ensure this is the action you wish to perform! It will cancel <b><?= $memberInfo["matricule"] . " " . $memberInfo["nom"] ?> </b>mentoring with all data linked to it.
+                                    </p>
+                                    <div class="row">
+                                        <div class="col-xl-6 col-lg-6 col-md-6  col-sm-6 p-3">
+                                            <a href="parrain.php" class="btn btn-primary  w-100"> cancel</a>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-6  col-sm-6 p-3">
+                                            <a href="<?= $url ?>" class="btn btn-danger bi bi-trash w-100"> cancel <b><?= $memberInfo["matricule"] . " " . $memberInfo["nom"] ?> </b>mentoring ?</a>
+                                        </div>
+                                    </div>
+                                <?php
+                                }
+
+                                ?>
                                 <div class="row">
                                     <div class="col-xl-6 col-lg-6 col-md-6  col-sm-6 p-3">
-                                        <a href="member.php" class="btn btn-primary  w-100"> cancel</a>
+                                        <a href="parrain.php" class="btn btn-primary  w-100"> cancel</a>
                                     </div>
                                     <div class="col-xl-6 col-lg-6 col-md-6  col-sm-6 p-3">
-                                        <a href="../models/delete/delete-Member.php?SupMember=<?= $id ?>" class="btn btn-danger bi bi-trash w-100"> Delete the member</a>
+                                        <a href="<?= $url ?>" class="btn btn-danger bi bi-trash w-100"> cancel <b><?= $memberInfo["matricule"] . " " . $memberInfo["nom"] ?> </b>mentoring ?</a>
                                     </div>
                                 </div>
                             </div>
-                            <?php
+                        <?php
                         } else {
-                            if (isset($_GET['NewMember']) || isset($_GET["idmember"])) {
-                            ?>
-                                <!-- Le form qui enregistrer les données  -->
-                                <div class="col-md-4 grid-margin ">
-                                    <form action="<?= $url ?>" class="shadow p-3" method="POST" enctype="multipart/form-data">
-                                        <h5 class="text-center"><?= $title ?></h5>
-                                        <div class="row">
-                                            <div class="col-xl-12 col-lg-12 col-md-12  col-sm-6 p-3">
-                                                <label for="">Name <span class="text-danger">*</span></label>
-                                                <input required autocomplete="off" type="text" name="nom" class="form-control" placeholder="The name" <?php if (isset($_GET['idmember'])) { ?>value="<?= $tab['nom'] ?>" <?php } ?>>
-                                            </div>
+                        ?>
 
-                                            <div class="col-xl-12 col-lg-12 col-md-12  col-sm-6 p-3">
-                                                <label for="">Phone member <span class="text-danger">*</span></label>
-                                                <input required autocomplete="off" type="text" name="telephone" class="form-control" placeholder="The phone Number" <?php if (isset($_GET['idmember'])) { ?>value="<?= $tab['phone'] ?>" <?php } ?>>
-                                            </div>
-
-                                            <?php if (isset($_GET['idmember'])) {
-                                            ?>
-                                                <div class="col-xl-6 col-lg-6 col-md-6 mt-4 col-sm-6 p-3 ">
-                                                    <input type="submit" name="Valider" class="btn btn-primary w-100" value="Update">
-                                                </div>
-                                                <div class="col-xl-6 col-lg-6 col-md-6 mt-4 col-sm-6 p-3 ">
-                                                    <a href="member.php" class="btn btn-danger w-100">Cancel</a>
-                                                </div>
+                            <!-- La table qui affiche les données  -->
+                            <div class="col-xl-12 col-lg-12 col-md-6 table-responsive px-3 pt-3">
+                                <div class="row text-center mt-5">
+                                    <h4 class="text-center">Mentors List</h4>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Phone number</th>
+                                                <th>Profil</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                             <?php
-                                            } else {
+                                            $n = 0;
+                                            while ($mentor = $getMentors->fetch()) {
+                                                $n++;
                                             ?>
-                                                <!-- <div class="col-xl-6 col-lg-6 col-md-6  col-sm-6 p-3">
-                                                    <label for="">Mot de passe <span class="text-danger">*</span></label>
-                                                    <input required autocomplete="off" type="password" name="pwd" class="form-control" placeholder="Ex:..." <?php if (isset($_GET['idmember'])) { ?>value="<?= $element['pwd'] ?>" <?php } ?>>
-                                                </div> -->
-                                                <div class="form-group col-xl-12 col-lg-12 col-md-12  col-sm-6 p-3">
-                                                    <label for="">Profil photo<span class="text-danger">*</span></label>
-                                                    <input type="file" name="picture" accept=".jpg,.jpeg,.png" class="file-upload-default">
-                                                    <div class="input-group col-xs-12">
-                                                        <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
-                                                        <span class="input-group-append">
-                                                            <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 p-3">
-                                                    <input type="submit" class="btn btn-primary w-100" name="Valider" value="<?= $btn ?>">
-                                                </div>
+                                                <tr>
+                                                    <th scope="row"><?= $n; ?></th>
+                                                    <th><?= $mentor["member"] ?></th>
+                                                    <td> <?= $mentor["nom"] ?></td>
+                                                    <td><?= $mentor["phone"] ?></td>
+                                                    <td><img src="../images/profil/<?= $mentor["profil"] ?>" alt="" class="rounded-circle mt-2" width="85px" height="80px"></td>
+                                                    <td>
+                                                        <a href="mentors-list.php?MtMentor=<?= $mentor['matricule'] ?>" class="btn btn-danger btn-sm mt-1">
+                                                            <i class="bi bi-cancel"></i>Mentoring
+                                                        </a>
+                                                    </td>
+                                                </tr>
                                             <?php
                                             }
                                             ?>
-
-                                        </div>
-                                    </form>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div class="col-md-8 grid-margin">
-                                    <div class="row text-center">
-                                        <h4 class="text-center">Member List</h4>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>ID</th>
-                                                    <th>Name</th>
-                                                    <th>Phone number</th>
-                                                    <th>Profil</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                $n = 0;
-                                                while ($member = $getData->fetch()) {
-                                                    $n++;
-                                                ?>
-                                                   <tr>
-                                                        <th scope="row"><?= $n; ?></th>
-                                                        <th><?= $member["matricule"] ?></th>
-                                                        <td> <?= $member["nom"] ?></td>                                                        
-                                                        <td><?= $member["phone"] ?></td>
-                                                        <td><img src="../images/profil/<?= $member["profil"] ?>" alt="" class="rounded-circle mt-2" width="65px" height="60px"></td>
-                                                        
-                                                    </tr>
-                                                <?php
-                                                }
-                                                ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                </div>
-
-                            <?php
-                            } else {
-                            ?>
-
-
-                                <div class="add-items d-flex mb-0 mt-2 p-2">
-                                    <a href="member.php?NewMember" class="add btn btn text-primary bg-transparent border">
-                                        <i class="icon-circle-plus"> </i> New member
-                                    </a>
-
-                                </div>
-
-
-                                <!-- La table qui affiche les données  -->
-                                <div class="col-xl-12 col-lg-12 col-md-6 table-responsive px-3 pt-3">
-                                    <div class="row text-center">
-                                        <h4 class="text-center">Member List</h4>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>ID</th>
-                                                    <th>Name</th>
-                                                    <th>Phone number</th>
-                                                    <th>Profil</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                $n = 0;
-                                                while ($member = $getData->fetch()) {
-                                                    $n++;
-                                                ?>
-                                                    <tr>
-                                                        <th scope="row"><?= $n; ?></th>
-                                                        <th><?= $member["matricule"] ?></th>
-                                                        <td> <?= $member["nom"] ?></td>                                                        
-                                                        <td><?= $member["phone"] ?></td>
-                                                        <td><img src="../images/profil/<?= $member["profil"] ?>" alt="" class="rounded-circle mt-2" width="65px" height="60px"></td>
-                                                        <td>
-                                                            <a href='member.php?idmember=<?= $member['matricule'] ?>' class="btn btn-sm btn-success mt-1">
-                                                                <i class="bi bi-pencil-square"></i>
-                                                            </a>
-                                                            <a href="member.php?Supmember=<?= $member['matricule'] ?>" class="btn btn-danger btn-sm mt-1">
-                                                                <i class="bi bi-trash"></i>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                <?php
-                                                }
-                                                ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+                            </div>
                         <?php
-                            }
                         }
+
                         ?>
                     </div>
                 </div>

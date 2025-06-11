@@ -2,7 +2,7 @@
 # Se connecter à la BD
 include '../connexion/connexion.php';
 # Appel du script de selection
-require_once('../models/select/select-Member.php');
+require_once('../models/select/select-colis.php');
 
 ?>
 <!DOCTYPE html>
@@ -174,20 +174,19 @@ require_once('../models/select/select-Member.php');
                 </div>
             </div> -->
 
-
             <?php require_once('aside.php'); ?>
 
             <div class="main-panel">
                 <div class="content-wrapper">
                     <div class="row">
                         <div class="col-12">
-                            <h4>Members</h4>
+                            <h4>Package</h4>
                         </div>
                         <!-- pour afficher les massage  -->
                         <?php
                         if (isset($_SESSION['msg']) && !empty($_SESSION['msg'])) {
                         ?>
-                            <button type="button" class="btn btn-outline-primary btn-lg btn-block"><?= $_SESSION['msg'] ?></button>                           
+                            <button type="button" class="btn btn-outline-primary btn-lg btn-block"><?= $_SESSION['msg'] ?></button>
                         <?php  }
                         #Cette ligne permet de vider la valeur qui se trouve dans la session message  
                         unset($_SESSION['msg']);
@@ -199,20 +198,20 @@ require_once('../models/select/select-Member.php');
                                 <h3 class="bi bi-shield-exclamation text-danger text-center">Confirmation Required</h3> <br>
                                 <p class="text-center">
                                     Do you really want to delete this member? This is dangerous! <br>
-                                    This action is irreversible. Please ensure this is the action you wish to perform! It will delete a member from the database along with all data linked to him.
+                                    This action is irreversible. Please ensure this is the action you wish to perform! It will delete a Package from the database along with all data linked to it.
                                 </p>
                                 <div class="row">
                                     <div class="col-xl-6 col-lg-6 col-md-6  col-sm-6 p-3">
-                                        <a href="member.php" class="btn btn-primary  w-100"> cancel</a>
+                                        <a href="Agent.php" class="btn btn-primary  w-100"> cancel</a>
                                     </div>
                                     <div class="col-xl-6 col-lg-6 col-md-6  col-sm-6 p-3">
-                                        <a href="../models/delete/delete-Member.php?SupMember=<?= $id ?>" class="btn btn-danger bi bi-trash w-100"> Delete the member</a>
+                                        <a href="../models/delete/delete-Member.php?SupMember=<?= $id ?>" class="btn btn-danger bi bi-trash w-100"> Delete the package</a>
                                     </div>
                                 </div>
                             </div>
                             <?php
                         } else {
-                            if (isset($_GET['NewMember']) || isset($_GET["idmember"])) {
+                            if (isset($_GET['NewPackage']) || isset($_GET["idcolis"])) {
                             ?>
                                 <!-- Le form qui enregistrer les données  -->
                                 <div class="col-md-4 grid-margin ">
@@ -220,16 +219,30 @@ require_once('../models/select/select-Member.php');
                                         <h5 class="text-center"><?= $title ?></h5>
                                         <div class="row">
                                             <div class="col-xl-12 col-lg-12 col-md-12  col-sm-6 p-3">
-                                                <label for="">Name <span class="text-danger">*</span></label>
-                                                <input required autocomplete="off" type="text" name="nom" class="form-control" placeholder="The name" <?php if (isset($_GET['idmember'])) { ?>value="<?= $tab['nom'] ?>" <?php } ?>>
+                                                <label for="">Member <span class="text-danger">*</span></label>
+                                                <select required id="" name="member" class="js-example-basic-single w-100">
+                                                    <?php
+                                                    while ($Members = $getMember->fetch()) {
+                                                        if (isset($_GET['idcolis'])) {
+                                                    ?>
+                                                            <option <?php if ($MembersModif == $Members['matricule']) { ?>Selected <?php } ?> value="<?= $Members['matricule'] ?>"><?= $Members['matricule'] . " - " . $Members['nom'] ?></option>
+                                                        <?php
+                                                        } else {
+                                                        ?>
+                                                            <option value="<?= $Members['matricule'] ?>"><?= $Members['matricule'] . " - " . $Members['nom'] ?></option>
+                                                    <?php
+                                                        }
+                                                    }
+                                                    ?>
+                                                </select>
                                             </div>
 
                                             <div class="col-xl-12 col-lg-12 col-md-12  col-sm-6 p-3">
-                                                <label for="">Phone member <span class="text-danger">*</span></label>
-                                                <input required autocomplete="off" type="text" name="telephone" class="form-control" placeholder="The phone Number" <?php if (isset($_GET['idmember'])) { ?>value="<?= $tab['phone'] ?>" <?php } ?>>
+                                                <label for="">Package CBM's <span class="text-danger">*</span></label>
+                                                <input required autocomplete="off" type="text" name="cbm" class="form-control" placeholder="The phone Number" <?php if (isset($_GET['idcolis'])) { ?>value="<?= $tab['cbm'] ?>" <?php } ?>>
                                             </div>
 
-                                            <?php if (isset($_GET['idmember'])) {
+                                            <?php if (isset($_GET['idcolis'])) {
                                             ?>
                                                 <div class="col-xl-6 col-lg-6 col-md-6 mt-4 col-sm-6 p-3 ">
                                                     <input type="submit" name="Valider" class="btn btn-primary w-100" value="Update">
@@ -240,20 +253,6 @@ require_once('../models/select/select-Member.php');
                                             <?php
                                             } else {
                                             ?>
-                                                <!-- <div class="col-xl-6 col-lg-6 col-md-6  col-sm-6 p-3">
-                                                    <label for="">Mot de passe <span class="text-danger">*</span></label>
-                                                    <input required autocomplete="off" type="password" name="pwd" class="form-control" placeholder="Ex:..." <?php if (isset($_GET['idmember'])) { ?>value="<?= $element['pwd'] ?>" <?php } ?>>
-                                                </div> -->
-                                                <div class="form-group col-xl-12 col-lg-12 col-md-12  col-sm-6 p-3">
-                                                    <label for="">Profil photo<span class="text-danger">*</span></label>
-                                                    <input type="file" name="picture" accept=".jpg,.jpeg,.png" class="file-upload-default">
-                                                    <div class="input-group col-xs-12">
-                                                        <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
-                                                        <span class="input-group-append">
-                                                            <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
-                                                        </span>
-                                                    </div>
-                                                </div>
                                                 <div class="col-12 p-3">
                                                     <input type="submit" class="btn btn-primary w-100" name="Valider" value="<?= $btn ?>">
                                                 </div>
@@ -273,25 +272,20 @@ require_once('../models/select/select-Member.php');
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>ID</th>
-                                                    <th>Name</th>
-                                                    <th>Phone number</th>
-                                                    <th>Profil</th>
+                                                    <th>Member ID</th>
+                                                    <th>Package CMB's</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <?php
                                                 $n = 0;
-                                                while ($member = $getData->fetch()) {
+                                                while ($colis = $getData->fetch()) {
                                                     $n++;
                                                 ?>
-                                                   <tr>
+                                                    <tr>
                                                         <th scope="row"><?= $n; ?></th>
-                                                        <th><?= $member["matricule"] ?></th>
-                                                        <td> <?= $member["nom"] ?></td>                                                        
-                                                        <td><?= $member["phone"] ?></td>
-                                                        <td><img src="../images/profil/<?= $member["profil"] ?>" alt="" class="rounded-circle mt-2" width="65px" height="60px"></td>
-                                                        
+                                                        <th><?= $colis["member"] ?></th>
+                                                        <td> <?= $colis["cbm"] ?><b> Cbm</b></td>                                                        
                                                     </tr>
                                                 <?php
                                                 }
@@ -308,8 +302,8 @@ require_once('../models/select/select-Member.php');
 
 
                                 <div class="add-items d-flex mb-0 mt-2 p-2">
-                                    <a href="member.php?NewMember" class="add btn btn text-primary bg-transparent border">
-                                        <i class="icon-circle-plus"> </i> New member
+                                    <a href="colis.php?NewPackage" class="add btn btn text-primary bg-transparent border">
+                                        <i class="icon-circle-plus"> </i> New Package
                                     </a>
 
                                 </div>
@@ -325,31 +319,30 @@ require_once('../models/select/select-Member.php');
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>ID</th>
-                                                    <th>Name</th>
-                                                    <th>Phone number</th>
-                                                    <th>Profil</th>
+                                                    <th>Member ID</th>
+                                                    <th>Package CMB's</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <?php
                                                 $n = 0;
-                                                while ($member = $getData->fetch()) {
+                                                while ($colis = $getData->fetch()) {
                                                     $n++;
                                                 ?>
                                                     <tr>
                                                         <th scope="row"><?= $n; ?></th>
-                                                        <th><?= $member["matricule"] ?></th>
-                                                        <td> <?= $member["nom"] ?></td>                                                        
-                                                        <td><?= $member["phone"] ?></td>
-                                                        <td><img src="../images/profil/<?= $member["profil"] ?>" alt="" class="rounded-circle mt-2" width="65px" height="60px"></td>
+                                                        <th><?= $colis["member"] ?></th>
+                                                        <td> <?= $colis["cbm"] ?><b> Cbm</b></td>
                                                         <td>
-                                                            <a href='member.php?idmember=<?= $member['matricule'] ?>' class="btn btn-sm btn-success mt-1">
+                                                            <a href='colis.php?idcolis=<?= $colis['id'] ?>' class="btn btn-sm btn-success mt-1">
                                                                 <i class="bi bi-pencil-square"></i>
                                                             </a>
-                                                            <a href="member.php?Supmember=<?= $member['matricule'] ?>" class="btn btn-danger btn-sm mt-1">
+                                                            <a href="colis.php?Supcolis=<?= $colis['id'] ?>" class="btn btn-danger btn-sm mt-1">
                                                                 <i class="bi bi-trash"></i>
+                                                            </a>
+                                                            <a href="colis.php?Supcolis=<?= $colis['id'] ?>" class="btn btn-success btn-sm mt-1">
+                                                                <i class="bi bi-send"></i>
                                                             </a>
                                                         </td>
                                                     </tr>

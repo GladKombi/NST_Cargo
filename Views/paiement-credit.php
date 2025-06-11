@@ -2,7 +2,7 @@
 # Se connecter à la BD
 include '../connexion/connexion.php';
 # Appel du script de selection
-require_once('../models/select/select-Member.php');
+require_once('../models/select/select-Repayement.php');
 
 ?>
 <!DOCTYPE html>
@@ -181,81 +181,65 @@ require_once('../models/select/select-Member.php');
                 <div class="content-wrapper">
                     <div class="row">
                         <div class="col-12">
-                            <h4>Members</h4>
+                            <h4>Repayement Credit application</h4>
                         </div>
                         <!-- pour afficher les massage  -->
                         <?php
                         if (isset($_SESSION['msg']) && !empty($_SESSION['msg'])) {
                         ?>
-                            <button type="button" class="btn btn-outline-primary btn-lg btn-block"><?= $_SESSION['msg'] ?></button>                           
+                            <button type="button" class="btn btn-outline-primary btn-lg btn-block"><?= $_SESSION['msg'] ?></button>
                         <?php  }
                         #Cette ligne permet de vider la valeur qui se trouve dans la session message  
                         unset($_SESSION['msg']);
                         # Confirmation de la suppression
-                        if (isset($_GET['Supmember'])) {
-                            $id = $_GET["Supmember"];
+                        if (isset($_GET['SupCredit'])) {
+                            $id = $_GET["SupCredit"];
                         ?>
                             <div class="col-xl-12 px-3 card mt-4 px-4 pt-3">
                                 <h3 class="bi bi-shield-exclamation text-danger text-center">Confirmation Required</h3> <br>
                                 <p class="text-center">
-                                    Do you really want to delete this member? This is dangerous! <br>
-                                    This action is irreversible. Please ensure this is the action you wish to perform! It will delete a member from the database along with all data linked to him.
+                                    Do you really want to delete this Credit application? This is dangerous! <br>
+                                    This action is irreversible. Please ensure this is the action you wish to perform! It will delete a credit application from the database along with all data linked to it.
                                 </p>
                                 <div class="row">
                                     <div class="col-xl-6 col-lg-6 col-md-6  col-sm-6 p-3">
-                                        <a href="member.php" class="btn btn-primary  w-100"> cancel</a>
+                                        <a href="demande.php" class="btn btn-primary  w-100"> cancel</a>
                                     </div>
                                     <div class="col-xl-6 col-lg-6 col-md-6  col-sm-6 p-3">
-                                        <a href="../models/delete/delete-Member.php?SupMember=<?= $id ?>" class="btn btn-danger bi bi-trash w-100"> Delete the member</a>
+                                        <a href="../models/delete/delete-credit.php?SupCredit=<?= $id ?>" class="btn btn-danger bi bi-trash w-100"> Delete the credit application</a>
                                     </div>
                                 </div>
                             </div>
                             <?php
                         } else {
-                            if (isset($_GET['NewMember']) || isset($_GET["idmember"])) {
+                            if (isset($_GET["idDemande"])) {
                             ?>
                                 <!-- Le form qui enregistrer les données  -->
-                                <div class="col-md-4 grid-margin ">
+                                <div class="col-md-8 grid-margin ">
                                     <form action="<?= $url ?>" class="shadow p-3" method="POST" enctype="multipart/form-data">
-                                        <h5 class="text-center"><?= $title ?></h5>
+
                                         <div class="row">
-                                            <div class="col-xl-12 col-lg-12 col-md-12  col-sm-6 p-3">
-                                                <label for="">Name <span class="text-danger">*</span></label>
-                                                <input required autocomplete="off" type="text" name="nom" class="form-control" placeholder="The name" <?php if (isset($_GET['idmember'])) { ?>value="<?= $tab['nom'] ?>" <?php } ?>>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-6 p-3 text-center">
+                                                <h5 class=""><?= $member ?> credit</h5>
+                                                <img src="../images/profil/<?= $profil ?>" alt="" class="rounded-circle text-center" width="90px" height="85px">
+                                                <h6 class="mt-2">Name: <?= $nom . " Phone: " . $phone ?></h6>
+                                                <p>
+                                                    <b>Credit application amount : <?= $montant ?></b>
+                                                </p>
                                             </div>
 
                                             <div class="col-xl-12 col-lg-12 col-md-12  col-sm-6 p-3">
-                                                <label for="">Phone member <span class="text-danger">*</span></label>
-                                                <input required autocomplete="off" type="text" name="telephone" class="form-control" placeholder="The phone Number" <?php if (isset($_GET['idmember'])) { ?>value="<?= $tab['phone'] ?>" <?php } ?>>
+                                                <label for="">Repaye Amount <span class="text-danger">*</span></label>
+                                                <input required autocomplete="off" type="text" name="amount" class="form-control" placeholder="E.g: 243" <?php if (isset($_GET['idDemande'])) { ?>value="<?= $tab['montant'] ?>" <?php } ?>>
                                             </div>
 
-                                            <?php if (isset($_GET['idmember'])) {
+                                            <?php if (isset($_GET['idDemande'])) {
                                             ?>
                                                 <div class="col-xl-6 col-lg-6 col-md-6 mt-4 col-sm-6 p-3 ">
-                                                    <input type="submit" name="Valider" class="btn btn-primary w-100" value="Update">
+                                                    <input type="submit" name="Valider" class="btn btn-primary w-100" value="Save payement">
                                                 </div>
                                                 <div class="col-xl-6 col-lg-6 col-md-6 mt-4 col-sm-6 p-3 ">
-                                                    <a href="member.php" class="btn btn-danger w-100">Cancel</a>
-                                                </div>
-                                            <?php
-                                            } else {
-                                            ?>
-                                                <!-- <div class="col-xl-6 col-lg-6 col-md-6  col-sm-6 p-3">
-                                                    <label for="">Mot de passe <span class="text-danger">*</span></label>
-                                                    <input required autocomplete="off" type="password" name="pwd" class="form-control" placeholder="Ex:..." <?php if (isset($_GET['idmember'])) { ?>value="<?= $element['pwd'] ?>" <?php } ?>>
-                                                </div> -->
-                                                <div class="form-group col-xl-12 col-lg-12 col-md-12  col-sm-6 p-3">
-                                                    <label for="">Profil photo<span class="text-danger">*</span></label>
-                                                    <input type="file" name="picture" accept=".jpg,.jpeg,.png" class="file-upload-default">
-                                                    <div class="input-group col-xs-12">
-                                                        <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
-                                                        <span class="input-group-append">
-                                                            <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 p-3">
-                                                    <input type="submit" class="btn btn-primary w-100" name="Valider" value="<?= $btn ?>">
+                                                    <a href="demande.php" class="btn btn-danger w-100">Cancel</a>
                                                 </div>
                                             <?php
                                             }
@@ -264,102 +248,136 @@ require_once('../models/select/select-Member.php');
                                         </div>
                                     </form>
                                 </div>
-                                <div class="col-md-8 grid-margin">
-                                    <div class="row text-center">
-                                        <h4 class="text-center">Member List</h4>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>ID</th>
-                                                    <th>Name</th>
-                                                    <th>Phone number</th>
-                                                    <th>Profil</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                $n = 0;
-                                                while ($member = $getData->fetch()) {
-                                                    $n++;
-                                                ?>
-                                                   <tr>
-                                                        <th scope="row"><?= $n; ?></th>
-                                                        <th><?= $member["matricule"] ?></th>
-                                                        <td> <?= $member["nom"] ?></td>                                                        
-                                                        <td><?= $member["phone"] ?></td>
-                                                        <td><img src="../images/profil/<?= $member["profil"] ?>" alt="" class="rounded-circle mt-2" width="65px" height="60px"></td>
-                                                        
-                                                    </tr>
-                                                <?php
-                                                }
-                                                ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                </div>
 
                             <?php
                             } else {
                             ?>
+                                <?php
+                                if (isset($_GET["CreditView"])) {
+                                ?>
+                                    <!-- Cards qui affiche les credits no payees  -->
+                                    <div class="row mt-5">
+                                        <div class="col-xl-12 col-lg-12 col-md-12 text-center mb-3">
+                                            <h3>Credit application List</h3>
+                                        </div>
+                                        <div class="col-xl-12 col-lg-12 col-md-12 mb-3">
+                                            <a href="paiement-credit.php" class=" btn btn-primary btn-rounded">
+                                                < Back</a>
+                                        </div>
+
+                                        <?php
+                                        $n = 0;
+                                        while ($member = $getCredit->fetch()) {
+                                            $n++;
+                                            $mentoratMat = $member["mentorMat"];
+                                            # Selection Des données des mentors
+                                            $getMentorsInfo = $connexion->prepare("SELECT membre.nom, membre.phone,membre.profil FROM `membre` WHERE membre.matricule=?;");
+                                            $getMentorsInfo->execute([$mentoratMat]);
+                                            if ($mentor = $getMentorsInfo->fetch()) {
+                                                $NomMentor = $mentor["nom"];
+                                                $mentorPhone = $mentor["phone"];
+                                                $mentorprofil = $mentor["profil"];
+                                            }
+                                        ?>
+                                            <div class="col-md-4 grid-margin stretch-card">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <b><?= $n; ?></b>
+                                                        <h5 class="card-title text-center">Credit Application infos</h5>
+                                                        <p class="text-center">
+                                                            Member : <?= $member["memberName"] ?> <br>
+                                                            Phone numer : +<?= $member["memberPhone"] ?> <br>
+                                                            Date : <?= $member["date"] ?> <br>
+                                                            <img src="../images/profil/<?= $member["profil"] ?>" alt="" class="rounded-circle text-center" width="90px" height="85px"> <br>
+                                                        <h5 class="text-center">Credit amount : <?= $member["montant"] ?> </h5>
+                                                        </p>
+
+                                                        <div class="media">
+                                                            <i class="icon-md text-info d-flex align-self-center mr-3"><img src="../images/profil/<?= $mentorprofil ?>" alt="" class="rounded-circle text-center" width="60px" height="55px"></i>
+                                                            <div class="media-body">
+                                                                <p class="card-text">
+                                                                    Mentor Name : <?= $NomMentor  ?> <br>
+                                                                    Mentor Phone : +<?= $mentorPhone ?>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <a href="paiement-credit.php?idDemande=<?= $member['id'] ?>" class="btn btn-primary w-100 btn-sm rounded mt-3">
+                                                            <i class="bi bi-cash"></i> Repay Now
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
 
 
-                                <div class="add-items d-flex mb-0 mt-2 p-2">
-                                    <a href="member.php?NewMember" class="add btn btn text-primary bg-transparent border">
-                                        <i class="icon-circle-plus"> </i> New member
-                                    </a>
-
-                                </div>
-
-
-                                <!-- La table qui affiche les données  -->
-                                <div class="col-xl-12 col-lg-12 col-md-6 table-responsive px-3 pt-3">
-                                    <div class="row text-center">
-                                        <h4 class="text-center">Member List</h4>
+                                        <?php
+                                        }
+                                        ?>
                                     </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>ID</th>
-                                                    <th>Name</th>
-                                                    <th>Phone number</th>
-                                                    <th>Profil</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                $n = 0;
-                                                while ($member = $getData->fetch()) {
-                                                    $n++;
-                                                ?>
+
+                                <?php
+                                } else {
+                                ?>
+                                    <!-- La table qui affiche les payements  -->
+                                    <div class="col-xl-12 col-lg-12 col-md-12 table-responsive px-3 pt-3 shadow">
+                                        <div class="table-responsive">
+                                            <h4 class="text-center">Recent payement List</h4>
+                                            <table class="table table-hover">
+                                                <thead>
                                                     <tr>
-                                                        <th scope="row"><?= $n; ?></th>
-                                                        <th><?= $member["matricule"] ?></th>
-                                                        <td> <?= $member["nom"] ?></td>                                                        
-                                                        <td><?= $member["phone"] ?></td>
-                                                        <td><img src="../images/profil/<?= $member["profil"] ?>" alt="" class="rounded-circle mt-2" width="65px" height="60px"></td>
-                                                        <td>
-                                                            <a href='member.php?idmember=<?= $member['matricule'] ?>' class="btn btn-sm btn-success mt-1">
-                                                                <i class="bi bi-pencil-square"></i>
-                                                            </a>
-                                                            <a href="member.php?Supmember=<?= $member['matricule'] ?>" class="btn btn-danger btn-sm mt-1">
-                                                                <i class="bi bi-trash"></i>
-                                                            </a>
-                                                        </td>
+                                                        <th>#</th>
+                                                        <th>Date</th>
+                                                        <th>Member</th>
+                                                        <th>Mentor</th>
+                                                        <th>Amount</th>
+                                                        <th>Actions</th>
                                                     </tr>
-                                                <?php
-                                                }
-                                                ?>
-                                            </tbody>
-                                        </table>
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                    $n = 0;
+                                                    while ($ReparInfos = $getData->fetch()) {
+                                                        $n++;
+                                                        $demande = $ReparInfos["id"];
+                                                        # Selection Des données des mentors
+                                                        $getMentorsInfos = $connexion->prepare("SELECT membre.nom, membre.phone,membre.profil FROM `membre`,parrain, demande WHERE membre.matricule=parrain.member AND demande.mentor=parrain.id AND demande.id=?;");
+                                                        $getMentorsInfos->execute([$demande]);
+                                                        if ($mentor = $getMentorsInfos->fetch()) {
+                                                            $NomMentor = $mentor["nom"];
+                                                            $mentorPhone = $mentor["phone"];
+                                                            $mentorprofil = $mentor["profil"];
+                                                        }
+                                                    ?>
+                                                        <tr>
+                                                            <th scope="row"><?= $n; ?></th>
+                                                            <th><?= $ReparInfos["date"] ?></th>
+                                                            <td>
+                                                                <img src="../images/profil/<?= $ReparInfos["membreProfil"] ?>" alt="" class="rounded-circle text-center" width="80px" height="75px">
+                                                                <h6 class="mt-2"><?= $ReparInfos["nomMebre"] . " " . $ReparInfos["membrePhone"] ?></h6>
+                                                            </td>
+                                                            <td>
+                                                                <img src="../images/profil/<?= $mentorprofil ?>" alt="" class="rounded-circle text-center" width="80px" height="75px">
+                                                                <h6 class="mt-2"><?= $NomMentor . " " . $mentorPhone ?></h6>
+                                                            </td>
+                                                            <td><?= $ReparInfos["montant"] ?></td>
+                                                            <td>
+                                                                <a href='paiement-credit.php?idDemande=<?= $ReparInfos['id'] ?>' class="btn btn-sm btn-success mt-1">
+                                                                    <i class="bi bi-cash"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    <?php
+                                                    }
+                                                    ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                </div>
+                                    <div class="col-xl-12 col-lg-12 col-md-12 px-3 pt-3">
+                                        <a href="paiement-credit.php?CreditView" class="btn btn-primary bi bi-eye"> Show Credit Application</a>
+                                    </div>
+                                <?php
+                                }
+                                ?>
                         <?php
                             }
                         }
